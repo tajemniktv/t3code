@@ -3061,11 +3061,19 @@ export const packWindowsServerAsar = Effect.fn("packWindowsServerAsar")(function
     }
     unpackGlobs.push(`**/${posixPath}`);
   }
+  // ASAR matches unpack globs against absolute filenames without dot:true.
+  // Name the staging root explicitly so a .codex (or other hidden) parent
+  // does not prevent the native files from being unpacked.
+  const unpackRoot = path
+    .resolve(input.sourceDir)
+    .split(path.sep)
+    .join("/")
+    .replace(/[?*[\]{}()!+@]/g, "\\$&");
   yield* Effect.tryPromise({
     try: () =>
       createPackageWithOptions(input.sourceDir, input.asarPath, {
         dot: true,
-        unpack: `{${unpackGlobs.join(",")}}`,
+        unpack: `{${unpackGlobs.map((glob) => `${unpackRoot}/${glob}`).join(",")}}`,
         // glob 13 (via @electron/asar 4) matches `ignore` relative to `cwd`,
         // not against the absolute paths it crawls, so anchor it at the source.
         globOptions: {
