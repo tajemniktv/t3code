@@ -71,7 +71,15 @@ export default mergeConfig(
         build: {
           command: "node scripts/cli.ts build",
           dependsOn: ["@t3tools/web#build"],
-          cache: false,
+          cache: {
+            env: ["NODE_ENV", "T3CODE_RELAY*", "T3CODE_CLERK_*", "VITE_*", "EXPO_PUBLIC_CLERK_*"],
+            input: [
+              { auto: true },
+              "!dist/**",
+              { pattern: "!**/node-compile-cache/**", base: "workspace" },
+            ],
+            output: ["dist/**"],
+          },
         },
       },
     },

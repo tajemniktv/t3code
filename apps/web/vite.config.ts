@@ -280,6 +280,30 @@ export default defineConfig(() => {
     css: {
       devSourcemap: buildSourcemap !== false,
     },
+    run: {
+      tasks: {
+        build: {
+          command: "vp build",
+          cache: {
+            env: [
+              "NODE_ENV",
+              "APP_VERSION",
+              "T3CODE_CLERK_*",
+              "T3CODE_RELAY*",
+              "T3CODE_SINGLE_ORIGIN_DEV",
+              "T3CODE_BUNDLED_DEV",
+              "T3CODE_WEB_SOURCEMAP",
+              "VITE_*",
+              "EXPO_PUBLIC_CLERK_*",
+              "VERCEL_*",
+              "HOST",
+              "PORT",
+              "T3CODE_PORT",
+            ],
+          },
+        },
+      },
+    },
     build: {
       outDir: "dist",
       emptyOutDir: true,

@@ -27,7 +27,19 @@ export default defineConfig({
         command:
           "node scripts/build-browser-secret.mjs && node scripts/build-preview-annotation-css.mjs && vp pack",
         dependsOn: ["t3#build"],
-        cache: false,
+        cache: {
+          env: ["NODE_ENV", "CC", "T3CODE_CLERK_*", "VITE_CLERK_*", "EXPO_PUBLIC_CLERK_*"],
+          input: [
+            { auto: true },
+            "!dist-electron/**",
+            { pattern: "!**/node-compile-cache/**", base: "workspace" },
+          ],
+          output: [
+            { auto: true },
+            "!node_modules/.vite*/**",
+            { pattern: "!**/node-compile-cache/**", base: "workspace" },
+          ],
+        },
       },
       dev: {
         command:
